@@ -11,6 +11,10 @@ from sklearn.metrics import (
     classification_report, confusion_matrix, RocCurveDisplay
 )
 from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTE
+from sklearn.metrics import roc_curve
+import numpy as np
+
 
 # Load & preprocess data
 df = pd.read_csv('healthcare-dataset-stroke-data.csv')
@@ -45,11 +49,11 @@ models = {
 # Evaluation results
 results = {}
 
-# Plot setup
+# Train and evaluate models
 plt.figure(figsize=(10, 6))
 plt.title("ROC Curves")
 
-# Train & Evaluate
+# Loop through models
 for name, model in models.items():
     model.fit(X_train_bal, y_train_bal)
     y_pred = model.predict(X_test)
@@ -65,13 +69,18 @@ for name, model in models.items():
         "ROC AUC": auc
     }
 
-    RocCurveDisplay.from_estimator(model, X_test, y_test, name=name)
+    # Calculate ROC manually
+    fpr, tpr, _ = roc_curve(y_test, y_proba)
+    plt.plot(fpr, tpr, label=f"{name} (AUC = {auc:.2f})")
 
-# Show ROC plot
-plt.plot([0, 1], [0, 1], 'k--')  # Diagonal
+# Plot formatting
+plt.plot([0, 1], [0, 1], 'k--')  # baseline
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
 plt.legend()
 plt.grid()
 plt.show()
+
 
 # Print results
 print("\nModel Comparison:\n")
@@ -80,4 +89,18 @@ for name, scores in results.items():
     for metric, val in scores.items():
         print(f"  {metric}: {val:.4f}")
     print("-" * 30)
+
+
+# Convert results dictionary to DataFrame
+metrics_df = pd.DataFrame(results).T  # Transpose so models are rows
+metrics_df.plot(kind='bar', figsize=(10, 6))
+
+plt.title("Model Performance Comparison")
+plt.ylabel("Score")
+plt.ylim(0, 1)
+plt.xticks(rotation=0)
+plt.grid(axis='y')
+plt.legend(loc='lower right')
+plt.tight_layout()
+plt.show()
 
