@@ -1,4 +1,4 @@
-#Stroke Prediction using Machine Learning
+# Stroke Prediction using Machine Learning
 
 This project uses a variety of supervised machine learning models to predict the likelihood of a stroke based on patient health data. The dataset comes from a healthcare dataset containing demographic and clinical features of patients.
 
@@ -44,7 +44,7 @@ Bar plots and ROC curves are used to compare model performance.
 - **ROC Curves** for all models
 - **Bar Chart** comparing Accuracy, Recall, and ROC AUC across models
 
-## 🛠️ Dependencies
+## Dependencies
 
 Make sure the following libraries are installed:
 
